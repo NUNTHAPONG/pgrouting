@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/pgrouting/static/css/main.b91e96c3.css",
+    "main.js": "/pgrouting/static/js/main.7c90af45.js",
+    "index.html": "/pgrouting/index.html",
+    "main.b91e96c3.css.map": "/pgrouting/static/css/main.b91e96c3.css.map",
+    "main.7c90af45.js.map": "/pgrouting/static/js/main.7c90af45.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b91e96c3.css",
+    "static/js/main.7c90af45.js"
+  ]
+}
