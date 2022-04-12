@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/pgrouting/static/css/main.a06babed.css",
-    "main.js": "/pgrouting/static/js/main.1c98dc80.js",
+    "main.js": "/pgrouting/static/js/main.f6a3068a.js",
     "index.html": "/pgrouting/index.html",
     "main.a06babed.css.map": "/pgrouting/static/css/main.a06babed.css.map",
-    "main.1c98dc80.js.map": "/pgrouting/static/js/main.1c98dc80.js.map"
+    "main.f6a3068a.js.map": "/pgrouting/static/js/main.f6a3068a.js.map"
   },
   "entrypoints": [
     "static/css/main.a06babed.css",
-    "static/js/main.1c98dc80.js"
+    "static/js/main.f6a3068a.js"
   ]
 }
