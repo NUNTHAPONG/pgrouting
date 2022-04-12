@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/pgrouting/static/css/main.a06babed.css",
+    "main.js": "/pgrouting/static/js/main.9f9c1aea.js",
+    "index.html": "/pgrouting/index.html",
+    "main.a06babed.css.map": "/pgrouting/static/css/main.a06babed.css.map",
+    "main.9f9c1aea.js.map": "/pgrouting/static/js/main.9f9c1aea.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a06babed.css",
+    "static/js/main.9f9c1aea.js"
+  ]
+}
