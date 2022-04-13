@@ -1,17 +1,39 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import maplibregl from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
+import mapbox from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
+import { HOST } from "./conn";
 
 const Map = () => {
   const [Longitude, setLng] = useState(102.8357);
   const [Latitude, setLat] = useState(16.4542);
   const [Zoom, setZoom] = useState(11);
   const osm = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+  var locate;
+  var point;
+  var NodeFrom;
+  var NodeTo;
+  var Routepath;
+
+  const getNodeFrom = async (lat, lng) => {
+    await axios.get(`${HOST}/node/${lng}&${lat}`).then((res) => {
+      return (NodeFrom = res.data.features[0].properties.id);
+    });
+  };
+  const getNodeTo = async (lat, lng) => {
+    await axios.get(`${HOST}/node/${lng}&${lat}`).then((res) => {
+      return (NodeTo = res.data.features[0].properties.id);
+    });
+  };
+  const getRoute = async (from, to) => {
+    await axios.get(`${HOST}/route/${from}&${to}`).then((res) => {
+      return (Routepath = res.data);
+    });
+  };
 
   useEffect(() => {
-    const map = new maplibregl.Map({
+    const map = new mapbox.Map({
       container: "map",
       style: {
         version: 8,
@@ -33,14 +55,14 @@ const Map = () => {
       center: [Longitude, Latitude],
       zoom: Zoom,
       maxBounds: [
-        [102.4320, 16.2374], // Southwest coordinates
+        [102.432, 16.2374], // Southwest coordinates
         [103.2539, 16.6576], // Northeast coordinates
       ],
       minZoom: Zoom,
       doubleClickZoom: false,
     });
 
-    const geolocate = new maplibregl.GeolocateControl({
+    const geolocate = new mapbox.GeolocateControl({
       showAccuracyCircle: false,
       positionOptions: {
         enableHighAccuracy: true,
@@ -49,10 +71,10 @@ const Map = () => {
       showUserHeading: true,
     });
     map
-      .addControl(new maplibregl.NavigationControl({}))
-      .addControl(new maplibregl.ScaleControl({}))
+      .addControl(new mapbox.NavigationControl({}))
+      .addControl(new mapbox.ScaleControl({}))
       .addControl(
-        new maplibregl.AttributionControl({
+        new mapbox.AttributionControl({
           compact: true,
           customAttribution: `© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>`,
         })
@@ -72,7 +94,7 @@ const Map = () => {
         type: "circle",
         source: {
           type: "geojson",
-          data: `/point`,
+          data: `${HOST}/point`,
         },
         paint: {
           "circle-color": "red",
@@ -84,35 +106,28 @@ const Map = () => {
       });
     });
 
-    var locate;
-    var point;
-    var NodeFrom;
-    var NodeTo;
-    var Routepath;
-
-    const Popup = new maplibregl.Popup({ closeButton: false });
+    const Popup = new mapbox.Popup({ closeButton: true });
     map.on("mouseenter", "pointServices", (e) => {
       map.getCanvas().style.cursor = "pointer";
-      let prop = e.features[0].properties;
       point = {
         lat: e.features[0].geometry.coordinates[1],
         lng: e.features[0].geometry.coordinates[0],
       };
       getNodeTo(point.lat, point.lng);
+    });
+
+    map.on("click", "pointServices", (e) => {
+      let prop = e.features[0].properties;
       Popup.setLngLat(point)
+        // <img src="/img/${prop.name}.jpg"  width="100%" height="100%" alt="${prop.name}"><br/>
         .setHTML(
           `<div class="point-det">
             <b>Name :</b> ${prop.name} <br/>
-            <img src="/img/${prop.name}.jpg"  width="100%" height="100%" alt="${prop.name}"><br/>
             <b>Tel :</b> <a href="tel:${prop.tel}" style="color: black">${prop.tel}</a><br/>
             <b>Payment :</b>  ${prop.pay}
             </div>`
         )
         .addTo(map);
-    });
-    map.on("mouseleave", "pointServices", () => {
-      map.getCanvas().style.cursor = "";
-      Popup.remove();
     });
 
     geolocate.on("geolocate", (e) => {
@@ -143,22 +158,6 @@ const Map = () => {
       };
       getNodeFrom(locate.lat, locate.lng);
     });
-
-    const getNodeFrom = async (lat, lng) => {
-      await axios.get(`/node/${lng}&${lat}`).then((res) => {
-        return (NodeFrom = res.data.features[0].properties.id);
-      });
-    };
-    const getNodeTo = async (lat, lng) => {
-      await axios.get(`/node/${lng}&${lat}`).then((res) => {
-        return (NodeTo = res.data.features[0].properties.id);
-      });
-    };
-    const getRoute = async (from, to) => {
-      await axios.get(`/route/${from}&${to}`).then((res) => {
-        return (Routepath = res.data);
-      });
-    };
 
     return () => {
       map.remove();
